@@ -1,0 +1,126 @@
+<form [formGroup]="this.registroForm" (ngSubmit)="finishRegistration()">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="row">
+        <label for="email" class="form-label">Correo electrónico *</label>
+        <input
+          formControlName="email"
+          type="email"
+          id="email"
+          class="form-control"
+          required
+          placeholder="mail@mail.com"
+        />
+        <!-- errores de validacion-->
+
+        <label for="cc" class="form-label">Cedula *</label>
+        <input
+          formControlName="cc"
+          type="text"
+          id="cc"
+          class="form-control"
+          required
+          placeholder="1234567890"
+        />
+        <!-- errores de validacion-->
+        <label for="password" class="form-label">Contraseña *</label>
+        <input
+          formControlName="password"
+          type="password"
+          id="password"
+          class="form-control"
+          required
+          placeholder="••••••••"
+        />
+        <!-- errores de validacion-->
+
+        <label for="repassword" class="form-label">Repetir contraseña *</label>
+        <input
+          formControlName="repassword"
+          type="password"
+          id="repassword"
+          class="form-control"
+          required
+          placeholder="••••••••"
+        />
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="row">
+        <label for="name" class="form-label">Nombre *</label>
+        <input
+          formControlName="name"
+          type="text"
+          id="name"
+          class="form-control"
+          required
+          placeholder="Mi nombre"
+        />
+        <!-- errores de validacion-->
+
+        <label for="lastname" class="form-label">Apellidos *</label>
+        <input
+          formControlName="lastname"
+          type="text"
+          id="lastname"
+          class="form-control"
+          required
+          placeholder="Mis apellidos"
+        />
+        <!-- errores de validacion-->
+
+        <label for="tlfno" class="form-label">Telefono (opcional)</label>
+        <input
+          formControlName="phone"
+          type="text"
+          id="tlfno"
+          class="form-control"
+          placeholder="Mi telefono(opcional)"
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- errores de validacion-->
+  <hr />
+
+  <div class="row">
+    <p>
+      <small class="text-mutted"
+        >Sayda Maya Centro de Sonrisas se compromete a garantizar la seguridad
+        de tus datos y a guardarlos en la más estricta confidencialidad.</small
+      >
+    </p>
+    <hr />
+
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" id="checkInfo" />
+      <label class="form-check-label" for="checkInfo">
+        Deseo recibir información sobre novedades y promociones
+      </label>
+    </div>
+
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="checkbox"
+        id="checkCondiciones"
+        name="condUso"
+        value="true"
+        checked
+      />
+      <label class="form-check-label" for="checkCondiciones">
+        Acepto las condiciones de uso y nuestra politica de cookies.
+      </label>
+    </div>
+    <div class="col-md-6">
+      <button
+        type="submit"
+        class="btn btn-primary btn-lg"
+        [disabled]="this.registroForm.status !== 'VALID'"
+      >
+        Registrarme
+      </button>
+    </div>
+  </div>
+</form>
