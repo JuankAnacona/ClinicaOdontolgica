@@ -1,7 +1,7 @@
 import { HttpClient , HttpClientModule } from '@angular/common/http';
 import { Inject, Injectable, inject } from '@angular/core';
 import { IRestMessage } from '../models/restmessage';
-import { IPatient } from '../models/patient';
+import { IUser } from '../models/user';
 import { Observable } from 'rxjs';
 import { IOdon_Service } from '../models/odon_service';
 
@@ -15,7 +15,7 @@ export class NodeRestService {
   private url: string = 'http://localhost:3000/api/'
   constructor() { 
   }
-  public registerPatient(dataForm: [IPatient, string,string]){ 
+  public registerPatient(dataForm: [IUser, string,string]){ 
     return this.clientHttp.post<IRestMessage>(`${this.url}Portals/RegisterUser`, dataForm);
   }
 

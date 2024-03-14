@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
+import { IUser } from '../models/user';
+import { IStorageService } from '../models/interfaceservicios';
 
 @Injectable({
   providedIn: 'root'
@@ -8,26 +10,20 @@ export class LocalstorageService implements IStorageService {
 
   constructor() { }
   
-  AlmacenarDatosCliente(datoscliente: ICliente): void {
-   localStorage.setItem('datoscliente',JSON.stringify(datoscliente));
+  SaveUserData(_datauser: IUser): void {
+   localStorage.setItem('datauser',JSON.stringify(_datauser));
   }
-  AlmacenarJWT(jwt: string): void {
-    localStorage.setItem('jwt', jwt);
+  SaveJWTData(jwt: string): void {
+    localStorage.setItem('token', jwt);
   }
-  RecuperarDatosCliente(): Observable<ICliente> {
-    let _datoscliente:ICliente=(JSON.parse( localStorage.getItem('datoscliente')! )) as ICliente;
-    return of( _datoscliente );
+  ReturnUserData(): Observable<IUser> {
+    let _datauser:IUser=(JSON.parse( localStorage.getItem('datauser')! )) as IUser;
+    return of( _datauser );
   }
-  RecuperarJWT(): Observable<string> {
-    let _jwt=localStorage.getItem('jwt')!;
+  ReturnJWTData(): Observable<string> {
+    let _jwt=localStorage.getItem('token')!;
     return of(_jwt);
   }
 
-  OperarElementosPedido(libro: ILibro, cantidad: number, operacion: string): void {
-    throw new Error('Method not implemented.');
-  }
-  RecuperarElementosPedido(): Observable<{ libroElemento: ILibro; cantidadElemento: number; }[]> {
-    throw new Error('Method not implemented.');
-  }
 
 }

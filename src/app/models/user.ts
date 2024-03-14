@@ -1,5 +1,5 @@
 import { IAddress } from './address';
-export interface IPatient {
+export interface IUser {
     name:      string;
     lastname:   string;
     account:      {  email: string, cc: string, activeAccount?:boolean, imagenAvatarBASE64?:string  };

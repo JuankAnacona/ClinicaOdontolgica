@@ -1,9 +1,5 @@
-import { Component , Inject, OnInit, signal, Signal, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { Observable } from 'rxjs';
-import { Router, RouterLink,  RouterLinkActive, RouterOutlet, RouterModule} from '@angular/router';
-import { IOdon_Service } from '../models/odon_service';
-import { NodeRestService } from '../services/node-rest.service';
+import { Component } from '@angular/core';
+import { RouterModule} from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { initFlowbite } from 'flowbite';
 import { NavbarComponent } from './layout/navbar.component';

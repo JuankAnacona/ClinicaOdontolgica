@@ -5,7 +5,7 @@ import { NodeRestService } from '../../../services/node-rest.service';
 import { map } from 'rxjs';
 import { IRestMessage } from '../../../models/restmessage';
 import { Router } from '@angular/router';
-import { IPatient } from '../../../models/patient';
+import { IUser } from '../../../models/user';
 
 @Component({
   selector: 'app-register',
@@ -17,7 +17,7 @@ import { IPatient } from '../../../models/patient';
 export class RegisterComponent {
 
   public registroForm: FormGroup;
-  private patient!: IPatient;
+  private patient!: IUser;
   public typeUser = 'patient';
   public classBtnPatient = ' text-white bg-blue-500';
   public classBtnWorker = ' text-blue-500 border border-blue-500 bg-white';
