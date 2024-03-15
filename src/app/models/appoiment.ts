@@ -1,14 +1,12 @@
 import { IUser } from "./user";
 
 export interface IAppoinment {
- id?: string ;
+ id?: string;
  date: Date;
- worker: IUser;
- patient: IUser;
- description: string;
+ worker?: IUser;
+ patient?: IUser;
+ description?: string;
  status: string;
-
-
-
-
+ ccworker : string;
+ ccpatient : string;
 }

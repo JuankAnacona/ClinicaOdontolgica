@@ -4,6 +4,7 @@ import { IRestMessage } from '../models/restmessage';
 import { IUser } from '../models/user';
 import { Observable } from 'rxjs';
 import { IOdon_Service } from '../models/odon_service';
+import { IAppoinment } from '../models/appoiment';
 
 
 @Injectable({
@@ -25,5 +26,13 @@ export class RestforAdminService {
   }
   public getWorkers():Observable<IRestMessage>{
     return this.clientHttp.get<IRestMessage>(`${this.url}WorkerPortal/GetWorkers`);
+  }
+  public createAppointment(dataform:[IAppoinment,boolean,IUser]): Observable<IRestMessage>{
+
+    return this.clientHttp.post<IRestMessage>(`${this.url}WorkerPortal/CreateAppointment`,dataform);
+
+  }
+  public getMonthApoinments(datesosearch: string): Observable<IRestMessage>{
+    return this.clientHttp.get<IRestMessage>(`${this.url}WorkerPortal/GetMonthAppointments?datetosearch=${datesosearch}`);
   }
 }
