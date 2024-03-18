@@ -4,7 +4,8 @@ import { EmailVerfiedComponent } from './app/components/sharedPortals/email-verf
 import { RegisterCompletedComponent } from './app/components/sharedPortals/register-completed/register-completed.component';
 import { LoginWorkersComponent } from './app/components/workersPortal/login-workers/login-workers.component';
 import { LoginComponent } from './app/components/patientPortal/loginComponent/login.component';
-import { HomeWorkerComponent } from './app/components/workersPortal/home-worker/home-worker.component';
+import { AppointmentsComponent } from './app/components/workersPortal/Management/appointments/appointments.component';
+
 export const routes: Routes = [
     { path: 'PortalPaciente', 
   children: [
@@ -13,7 +14,10 @@ export const routes: Routes = [
   { path: 'PortalEmpleado',
   children: [
     {path: 'LoginEmpleado', component: LoginWorkersComponent},
-    {path: 'Inicio', component: HomeWorkerComponent}
+    {path: 'Gestion', children: [
+      {path: 'Citas', component: AppointmentsComponent}
+    
+    ]}
   ]
   },
   { path: 'Portales', children:[

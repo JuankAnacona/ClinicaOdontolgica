@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, Signal, WritableSignal, computed, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import {
   add,
   eachDayOfInterval,
@@ -13,6 +13,7 @@ import {
   parseISO,
   startOfToday,
 } from 'date-fns'
+import { IAppoinment } from '../../../../../models/appoiment';
 @Component({
   selector: 'app-calendar',
   standalone: true,
@@ -23,6 +24,7 @@ import {
 export class CalendarComponent {
 
   @Input() selectedDay!: WritableSignal<Date> ;
+  @Input() appointMentsofMonth!: WritableSignal<IAppoinment[]>;
 
 public today = startOfToday();
 public currentMonth : WritableSignal<string> = signal(format(this.today, 'MMM-yyyy'));
@@ -44,6 +46,8 @@ public daysofweek = [{ name: 'Domingo', short: 'Dom' },
 ];
 
 
+
+
   changeFirstDayCurrentMonth(addMonth: boolean = true) {
     let number = addMonth ? 1 : -1;
     let firstDayNextMonth = add(this.firstDayCurrentMonth(), { months: number });
@@ -59,10 +63,24 @@ public daysofweek = [{ name: 'Domingo', short: 'Dom' },
 
     chgMonth(addMonth: boolean = true) {
       this.changeFirstDayCurrentMonth(addMonth);
+      this.unPaintAppointments();
     }
 
     chgSelectedDay(day: Date) {
       this.selectedDay.set(day);
     }
+
+    private unPaintAppointment(appoitment: IAppoinment){
+    console.log('Entranndo a des-pintar cita');
+    let numberday = format(appoitment.date, 'd');
+    let daysContainer = document.getElementById(`day-appts-${numberday}`);
+    daysContainer!.innerHTML= '';
+  }
+
+  private unPaintAppointments() {
+    this.appointMentsofMonth().forEach(appointment => {
+      this.unPaintAppointment(appointment);
+    });
+  }
 
 }

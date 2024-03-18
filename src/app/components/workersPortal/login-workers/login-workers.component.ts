@@ -35,11 +35,9 @@ export class LoginWorkersComponent {
            if (this.res2.code == 0){
           this.storageSvc.SaveUserData(this.res2.data);
           this.storageSvc.SaveJWTData(this.res2.token!);
-          this.router.navigateByUrl('/PortalEmpleado/Inicio');
+          this.router.navigateByUrl('/PortalEmpleado/Gestion/Citas');
     } else{
       console.log('Login failed');
-      
-    
     }
           console.log(this.res2);
         }
