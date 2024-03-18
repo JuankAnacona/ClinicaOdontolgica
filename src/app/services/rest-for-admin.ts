@@ -35,4 +35,7 @@ export class RestforAdminService {
   public getMonthApoinments(datesosearch: string): Observable<IRestMessage>{
     return this.clientHttp.get<IRestMessage>(`${this.url}WorkerPortal/GetMonthAppointments?datetosearch=${datesosearch}`);
   }
+  public operateAppointment(data: string[]): Observable<IRestMessage>{
+    return this.clientHttp.post<IRestMessage>(`${this.url}WorkerPortal/OperateAppointment`,{data});
+  }
 }

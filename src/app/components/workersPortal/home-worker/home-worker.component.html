@@ -43,9 +43,7 @@
           class="p-5 border border-b-0 border-gray-200 dark:border-gray-700 dark:bg-gray-900"
         >
           <!-- Calendario aqui-->
-          <app-calendar
-            (updateSelectedDay)="updateSelectedDay($event)"
-          ></app-calendar>
+          <app-calendar [selectedDay]="this.selectedDay"></app-calendar>
         </div>
       </div>
       <h2 id="accordion-open-heading-2">
@@ -57,7 +55,8 @@
           aria-controls="accordion-open-body-2"
         >
           <span class="flex items-center">
-            Gestion de Citas Para El Dia {{ this.selectedDay() }}</span
+            Gestion de Citas Para El Dia
+            {{ this.selectedDay() }}</span
           >
           <svg
             data-accordion-icon
@@ -306,10 +305,14 @@
           </div>
 
           <!-- Citas Del dia-->
-          @for (appointment of this.appointMentsofDay(); track appointment) {
+          @for (appointment of this.appointMentsofDay(); track $index) {
+
           <section
             href="#"
-            class="flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700"
+            class="{{
+              'flex flex-col  items-center  border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl  my-4 ' +
+                this.colorAppointment(appointment.status)
+            }}"
           >
             <div class="flex flex-col justify-between p-4 leading-normal">
               <h5
@@ -318,41 +321,50 @@
                 {{ format(appointment.date, "HH") }} :
                 {{ format(appointment.date, "mm") }}
               </h5>
-              <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                <span class="font-bold">Atendido por:</span>
-                {{ appointment.worker?.name }}
-                {{ appointment.worker?.lastname }}
-              </span>
-              <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                <span class="font-bold">Paciente:</span>
-                {{ appointment.patient?.name }}
-                {{ appointment.patient?.lastname }}
-              </span>
-              <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                <span class="font-bold">Descripcion:</span>
-                {{
-                  appointment.description
-                    ? appointment.description
-                    : "Sin descripcion"
-                }}
-              </span>
-              <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                <span class="font-bold">Estado:</span>
-                {{ appointment.status }}
-              </span>
+              <div class="flex space-x-3">
+                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  <span class="font-bold">Atendido por:</span>
+                  {{ appointment.worker?.name }}
+                  {{ appointment.worker?.lastname }}
+                </span>
+                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  <span class="font-bold">Paciente:</span>
+                  {{ appointment.patient?.name }}
+                  {{ appointment.patient?.lastname }}
+                </span>
+              </div>
+              <hr />
+              <div class="flex space-x-3">
+                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  <span class="font-bold">Descripcion:</span>
+                  {{
+                    appointment.description
+                      ? appointment.description
+                      : "Sin descripcion"
+                  }}
+                </span>
+                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+                  <span class="font-bold">Estado:</span>
+                  {{ appointment.status }}
+                </span>
+              </div>
               <!-- Botones de Cancelar, Modificar / -->
-              <button
-                class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                (click)="cancelAppointment(appointment)"
-              >
-                Cancelar Cita
-              </button>
-              <button
-                class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                (click)="editAppointment(appointment)"
-              >
-                Modificar Cita
-              </button>
+              @if (appointment.status !== "Cancelada"){
+              <section class="flex space-x-3">
+                <button
+                  class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+                  (click)="operateAppointment(appointment.id, 'Cancel')"
+                >
+                  Cancelar Cita
+                </button>
+                <button
+                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  (click)="operateAppointment(appointment.id, 'Cancel')"
+                >
+                  Modificar Cita
+                </button>
+              </section>
+              }
             </div>
           </section>
 
