@@ -59,7 +59,7 @@
         >
           <span class="flex items-center">
             Gestion de Citas Para El Dia
-            {{ this.selectedDay() }}</span
+            {{ this.selectedDay() | translateDate }}</span
           >
           <svg
             data-accordion-icon
@@ -92,6 +92,7 @@
 
           <!-- Modal toggle -->
           <button
+            id="crud-modal-toggle"
             data-modal-target="crud-modal"
             data-modal-toggle="crud-modal"
             class="block text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -109,67 +110,11 @@
 
           <!-- Citas Del dia-->
           @for (appointment of this.appointMentsofDay(); track $index) {
-
-          <section
-            href="#"
-            class="{{
-              'flex flex-col  items-center  border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl  my-4 ' +
-                this.colorAppointment(appointment.status)
-            }}"
-          >
-            <div class="flex flex-col justify-between p-4 leading-normal">
-              <h5
-                class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
-              >
-                {{ format(appointment.date, "HH") }} :
-                {{ format(appointment.date, "mm") }}
-              </h5>
-              <div class="flex space-x-3">
-                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  <span class="font-bold">Atendido por:</span>
-                  {{ appointment.worker?.name }}
-                  {{ appointment.worker?.lastname }}
-                </span>
-                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  <span class="font-bold">Paciente:</span>
-                  {{ appointment.patient?.name }}
-                  {{ appointment.patient?.lastname }}
-                </span>
-              </div>
-              <hr />
-              <div class="flex space-x-3">
-                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  <span class="font-bold">Descripcion:</span>
-                  {{
-                    appointment.description
-                      ? appointment.description
-                      : "Sin descripcion"
-                  }}
-                </span>
-                <span class="mb-3 font-normal text-gray-700 dark:text-gray-400">
-                  <span class="font-bold">Estado:</span>
-                  {{ appointment.status }}
-                </span>
-              </div>
-              <!-- Botones de Cancelar, Modificar / -->
-              @if (appointment.status !== "Cancelada"){
-              <section class="flex space-x-3">
-                <button
-                  class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
-                  (click)="operateAppointment(appointment.id, 'Cancel')"
-                >
-                  Cancelar Cita
-                </button>
-                <button
-                  class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                  (click)="operateAppointment(appointment.id, 'Cancel')"
-                >
-                  Modificar Cita
-                </button>
-              </section>
-              }
-            </div>
-          </section>
+          <app-card-appointment
+            [appointment]="appointment"
+            [colorAppointment]="this.colorAppointment"
+            (launchOperateApp)="operateAppointment($event[0], $event[1])"
+          ></app-card-appointment>
 
           }
         </div>

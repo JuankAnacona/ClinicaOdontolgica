@@ -43,9 +43,6 @@ export class LoginWorkersComponent {
         }
       )
       
-       /*runInInjectionContext(this.injector,  () => {
-      this.resp = toSignal(this.restSvc.login('worker', this.FormLogin.value) as Observable<IRestMessage>, {initialValue: null});
-        console.log(this.resp());*/
     };
    
    }

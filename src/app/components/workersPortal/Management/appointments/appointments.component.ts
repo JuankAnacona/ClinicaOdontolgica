@@ -9,11 +9,14 @@ import { RestforAdminService } from '../../../../services/rest-for-admin';
 import { AsideWorkerComponent } from '../../aside-worker/aside-worker.component';
 import { CalendarComponent } from './calendar/calendar.component';
 import { ModalAppoitmentComponent } from './modal-appoitment/modal-appoitment.component';
+import { CardAppointmentComponent } from './card-appointment/card-appointment.component';
+import { TranslateDatePipe } from '../../../../pipes/translate-date.pipe';
 @Component({
   selector: 'app-appointments',
   standalone: true,
   imports: [CommonModule, AsideWorkerComponent, 
-    SearchPatientsDirective, CalendarComponent,ReactiveFormsModule, ModalAppoitmentComponent],
+    SearchPatientsDirective, CalendarComponent,ReactiveFormsModule, 
+    ModalAppoitmentComponent, CardAppointmentComponent, TranslateDatePipe],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.css'
 })
@@ -67,17 +70,7 @@ async ngOnInit() {
       daysContainer?.appendChild(dayContainer);
   }
 
-  private unPaintAppointment(appoitment: IAppoinment){
-    console.log('Entranndo a des-pintar cita');
-    let numberday = format(appoitment.date, 'd');
-    let daysContainer = document.getElementById(`day-appts-${numberday}`);
-    daysContainer!.innerHTML= '';
-  }
-  private unPaintAppointments() {
-    this.appointMentsofMonth().forEach(appointment => {
-      this.unPaintAppointment(appointment);
-    });
-  }
+  
 
   private paintAppointments() {
     this.appointMentsofMonth().forEach(appointment => {
@@ -92,11 +85,11 @@ async ngOnInit() {
         return forCalendar ? 'bg-yellow-400' :'bg-white hover:bg-gray-100';
       case 'Cancelada':
         return forCalendar?  'bg-red-700':'bg-red-200';
-      case 'Realizada-Asistio':
-      case 'Realizada-No Asistio':
-        return forCalendar ? 'bg-green-500':'bg-green-200';
+      case 'Realizada-Asistió':
+      case 'Realizada-No Asistió':
+        return forCalendar ? 'bg-green-500':'bg-green-100';
       default:
-        return forCalendar ? 'bg-yellow-500' :'bg-white hover:bg-gray-100';
+        return forCalendar ? 'bg-yellow-400' :'bg-white hover:bg-gray-100';
     }
   }
   

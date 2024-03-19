@@ -3,11 +3,13 @@ import { ReactiveFormsModule, FormControl, Validators, FormGroup } from '@angula
 import { RestforAdminService } from '../../../../../services/rest-for-admin';
 import { IUser } from '../../../../../models/user';
 import { IAppoinment } from '../../../../../models/appoiment';
+import { TranslateDatePipe } from '../../../../../pipes/translate-date.pipe';
+import { SearchPatientsDirective } from '../../../../../directives/searchpatients';
 
 @Component({
   selector: 'app-modal-appoitment',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, TranslateDatePipe, SearchPatientsDirective],
   templateUrl: './modal-appoitment.component.html',
   styleUrl: './modal-appoitment.component.css'
 })
@@ -55,6 +57,7 @@ private generateHours(): string[] {
 
 
   onSearch(filter: any) {
+
   console.log('filter', filter);
     if(filter.length <=0){
       this.patientsSearchs.set([]);
