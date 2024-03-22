@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, Inject, Signal, WritableSignal, computed, inject, signal } from '@angular/core';
+import { Component, Inject, Signal, WritableSignal, computed, effect, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
-import { format, startOfToday, getHours } from 'date-fns';
+import { format, startOfToday, getHours, parse } from 'date-fns';
 import { SearchPatientsDirective } from '../../../../directives/searchpatients';
 import { IAppoinment } from '../../../../models/appoiment';
 import { IUser } from '../../../../models/user';
@@ -11,6 +11,9 @@ import { CalendarComponent } from './calendar/calendar.component';
 import { ModalAppoitmentComponent } from './modal-appoitment/modal-appoitment.component';
 import { CardAppointmentComponent } from './card-appointment/card-appointment.component';
 import { TranslateDatePipe } from '../../../../pipes/translate-date.pipe';
+import { MY_TOKEN_SERVICESTORAGE } from '../../../../services/injectiontokenstorageservices';
+import { IStorageService } from '../../../../models/interfaceservicios';
+import { LocalstorageService } from '../../../../services/localstorage.service';
 @Component({
   selector: 'app-appointments',
   standalone: true,
@@ -23,16 +26,17 @@ import { TranslateDatePipe } from '../../../../pipes/translate-date.pipe';
 export class AppointmentsComponent {
 
 @Inject (RestforAdminService) private restAdminSvc: RestforAdminService = inject(RestforAdminService);
+@Inject (MY_TOKEN_SERVICESTORAGE) private storageSvc: IStorageService = inject(LocalstorageService);
 
 
 
 
-
+public appMonth: IAppoinment[] = [];
 public appointMentsofMonth : WritableSignal<IAppoinment[]> = signal([]);
 public appointMentsofDay : Signal<IAppoinment[]> = computed(()=>{
   let day = format(this.selectedDay(), 'dd');
    
-   return this.appointMentsofMonth().filter((appointment) => {
+   return this.appMonth.filter((appointment) => {
       return format(appointment.date, 'dd') === day;    
    });});
 
@@ -43,22 +47,55 @@ public getHours = getHours;
 public format = format;
 
 
+constructor(){
+  effect(() => {
+    this.unPaintAppointments();
+    this.appointMentsofMonth().forEach(appointment => {
+      this.paintAppointment(appointment);
+    });
+  this.appMonth = this.appointMentsofMonth();
+  });
 
+}
 
 
 async ngOnInit() {
-  await this.recoveryAppointments();
+  await this.callAppointmentfromRest(format(this.today, 'yyyy-MM'),true);
 }
-  async  recoveryAppointments()  {
-    let datetoSearch = format(this.selectedDay(), 'yyyy-MM');
-    await this.restAdminSvc.getMonthApoinments(datetoSearch).subscribe(respon => {
-      console.log('respon', respon);
-      this.appointMentsofMonth.set(respon.data) ;
-      this.paintAppointments();
-    });
+
+  async  recoveryAppointments(date: Date) : Promise<void>  {
+    let datetoSearch = format(date, 'yyyy-MM');
+    console.log('datetoSearch', datetoSearch);
+    //Si el mes ya esta cargado en el localstorage
+    if ( datetoSearch === format(this.today, 'yyyy-MM')) {
+      let appointments = this.storageSvc.ReturnAppointmentsCurrentMonth();
+      console.log('appointments', appointments);
+      if (appointments !== null) {
+        console.log('appointments');
+        this.appointMentsofMonth.set(appointments as IAppoinment[]);
+        
+        return;
+        
+    } else {
+      await this.callAppointmentfromRest(datetoSearch, true);
+    }
+      } else {
+        await this.callAppointmentfromRest(datetoSearch);
+      }
   }
 
-  private paintAppointment(appointment: IAppoinment){
+  private async callAppointmentfromRest(datetoSearch: string , firstCall: boolean = false){
+  await this.restAdminSvc.getMonthApoinments(datetoSearch).subscribe(respon => {
+          console.log('respon', respon);
+          this.appointMentsofMonth.set(respon.data) ;
+          if (firstCall) {
+            this.storageSvc.SaveAppointmentsCurrentMonth(respon.data);
+          }
+          
+        });
+  }
+
+  public paintAppointment(appointment: IAppoinment){
   console.log('Entranndo a pintar cita');
       let numberday = format(appointment.date, 'd');
       let daysContainer = document.getElementById(`day-appts-${numberday}`);
@@ -68,12 +105,13 @@ async ngOnInit() {
       info.textContent = `${format(appointment.date, "HH")}:${format(appointment.date, "mm")} - ${appointment.ccpatient}`;
       dayContainer.appendChild(info);
       daysContainer?.appendChild(dayContainer);
+      
   }
 
   
 
-  private paintAppointments() {
-    this.appointMentsofMonth().forEach(appointment => {
+  public paintAppointments(appointments : IAppoinment[] ) {
+    appointments.forEach(appointment => {
       this.paintAppointment(appointment);
     
     })
@@ -101,10 +139,28 @@ async ngOnInit() {
       console.log('resp', resp);
       if (resp.status === 'success') {
         let appointment = this.appointMentsofMonth().find((appointment) => appointment.id === idoffApp);
-        // Despintar la cita en el calendario
+        //Volver a pintar las citas
       }
       this.selectedDay.set(this.selectedDay());
     });
+  }
+
+    private unPaintAppointment(appoitment: IAppoinment){
+    console.log('Entranndo a des-pintar cita');
+    let numberday = format(appoitment.date, 'd');
+    let daysContainer = document.getElementById(`day-appts-${numberday}`);
+    daysContainer!.innerHTML= '';
+  }
+
+  public unPaintAppointments() {
+    console.log('Entranndo a des-pintar citas');
+    this.appointMentsofMonth().forEach(appointment => {
+      this.unPaintAppointment(appointment);
+    });
+  }
+  public async  chargeAppointments(month: string){
+    let date = new Date(month);
+    await this.recoveryAppointments(date);
   }
 
 

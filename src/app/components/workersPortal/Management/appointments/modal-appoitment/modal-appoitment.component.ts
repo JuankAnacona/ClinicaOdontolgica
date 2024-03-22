@@ -1,10 +1,11 @@
-import { Component, Inject, Input, WritableSignal, OnInit, signal, inject } from '@angular/core';
+import { Component, Inject, Input, WritableSignal, OnInit, signal, inject, Output, EventEmitter } from '@angular/core';
 import { ReactiveFormsModule, FormControl, Validators, FormGroup } from '@angular/forms';
 import { RestforAdminService } from '../../../../../services/rest-for-admin';
 import { IUser } from '../../../../../models/user';
 import { IAppoinment } from '../../../../../models/appoiment';
 import { TranslateDatePipe } from '../../../../../pipes/translate-date.pipe';
 import { SearchPatientsDirective } from '../../../../../directives/searchpatients';
+
 
 @Component({
   selector: 'app-modal-appoitment',
@@ -17,7 +18,6 @@ export class ModalAppoitmentComponent {
 
   @Input() selectedDay!: WritableSignal<Date> ;
   @Input() appointMentsofMonth!: WritableSignal<IAppoinment[]>;
-  @Input() paintAppointment!: Function;
   @Inject (RestforAdminService) private restAdminSvc: RestforAdminService = inject(RestforAdminService);
 
   public formAppointment: FormGroup = new FormGroup({});
@@ -84,21 +84,11 @@ private generateHours(): string[] {
   let patient : IUser ;
   if (this.newPatient) {
     console.log('paciente nuevo');
-    
-    if (!this.formAppointment.value.patient.split(',')[1]) {
-      alert('El campo Paciente debe llevar el apellido despues de una coma');
+    patient = this.instanceNewPatient()!;
+    if (!patient) {
       return;
     }
-    // Eliminar espacios en blanco
-    let lastname_ = this.formAppointment.value.patient.split(',')[1].trim();
-    let name_ = this.formAppointment.value.patient.split(',')[0].trim();
-    patient = {
-      account: {
-        cc: this.formAppointment.value.ccnewPatient
-      },
-      name: name_,
-      lastname: lastname_,
-    }
+    
   } else {
     patient = this.patientsSearchs().find((patient) => patient.account?.cc! === this.formAppointment.value.patient.split('-')[1])!;
   }
@@ -110,27 +100,46 @@ private generateHours(): string[] {
   let appointment : IAppoinment = {
     id: crypto.randomUUID(),
     date: dateWithHour,
+    creationDate: new Date(Date.now()),
     ccworker: this.formAppointment.value.worker,
     ccpatient: patient.account!.cc!,
     description: this.formAppointment.value.description,
     status: 'Pendiente'
   };
+
   console.log('appointment', appointment);
   this.restAdminSvc.createAppointment([appointment,this.newPatient, patient]).subscribe(respon => {
     console.log('respon', respon);
     if (respon.status === 'success') {
-      document.getElementById('close-modal-new-appointment')?.click();
       // Meter la nueva cita en el array de citas del mes
       const worker = this.AllWorkers.find((worker) => worker.account?.cc === appointment.ccworker);
       appointment.patient = patient;
       appointment.worker = worker;
       this.appointMentsofMonth.update( array => [...array, appointment]);
-      this.paintAppointment(appointment);
       this.formAppointment.reset();
-      this.selectedDay.set(this.selectedDay());
+      this.selectedDay.set(new Date (this.selectedDay()));
+      document.getElementById('close-modal-new-appointment')?.click();
     }
-    
-
   });
+  }
+
+  instanceNewPatient() : IUser | null {
+    let patient : IUser;
+    
+  if (!this.formAppointment.value.patient.split(',')[1]) {
+      alert('El campo Paciente debe llevar el apellido despues de una coma');
+      return null;
+    }
+    // Eliminar espacios en blanco
+    let lastname_ = this.formAppointment.value.patient.split(',')[1].trim().toUpperCase();
+    let name_ = this.formAppointment.value.patient.split(',')[0].trim().toUpperCase();
+    return patient = {
+      account: {
+        cc: this.formAppointment.value.ccnewPatient,
+        activeAccount: false
+      },
+      name: name_,
+      lastname: lastname_,
+    }
   }
 }

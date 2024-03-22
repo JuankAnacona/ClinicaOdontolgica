@@ -81,6 +81,7 @@
               @for(patient of this.patientsSearchs(); track patient){
               <button
                 type="button"
+                class="capitalize"
                 (click)="
                   selectPatient(
                     patient.name +
@@ -157,7 +158,7 @@
             >
               <option selected="true">Seleccione Equipo</option>
               @for (worker of this.AllWorkers; track worker) {
-              <option value="{{ worker.account?.cc }}">
+              <option class="capitalize" value="{{ worker.account?.cc }}">
                 {{ worker.name }} {{ worker.lastname }} -
                 {{ worker.account?.cc }}
               </option>

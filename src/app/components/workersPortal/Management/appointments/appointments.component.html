@@ -46,6 +46,8 @@
           <app-calendar
             [selectedDay]="this.selectedDay"
             [appointMentsofMonth]="this.appointMentsofMonth"
+            (EventUnpaintAppointment)="this.unPaintAppointments()"
+            (EventChargeAppointments)="this.chargeAppointments($event)"
           ></app-calendar>
         </div>
       </div>
@@ -105,7 +107,6 @@
           <app-modal-appoitment
             [selectedDay]="this.selectedDay"
             [appointMentsofMonth]="this.appointMentsofMonth"
-            [paintAppointment]="this.colorAppointment"
           ></app-modal-appoitment>
 
           <!-- Citas Del dia-->
@@ -115,7 +116,6 @@
             [colorAppointment]="this.colorAppointment"
             (launchOperateApp)="operateAppointment($event[0], $event[1])"
           ></app-card-appointment>
-
           }
         </div>
       </div>

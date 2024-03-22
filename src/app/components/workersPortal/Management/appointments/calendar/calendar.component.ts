@@ -1,16 +1,10 @@
-import { Component, EventEmitter, Input, Output, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
+import { Component, EventEmitter, Input, Output, Signal, WritableSignal, computed, signal } from '@angular/core';
 import {
   add,
   eachDayOfInterval,
   endOfMonth,
   format,
-  getDay,
-  isEqual,
-  isSameDay,
-  isSameMonth,
-  isToday,
   parse,
-  parseISO,
   startOfToday,
 } from 'date-fns'
 import { IAppoinment } from '../../../../../models/appoiment';
@@ -25,10 +19,13 @@ export class CalendarComponent {
 
   @Input() selectedDay!: WritableSignal<Date> ;
   @Input() appointMentsofMonth!: WritableSignal<IAppoinment[]>;
+  @Output() EventUnpaintAppointment : EventEmitter<void> = new EventEmitter<void>();
+  @Output() EventChargeAppointments : EventEmitter<string> = new EventEmitter<string>();
 
 public today = startOfToday();
 public currentMonth : WritableSignal<string> = signal(format(this.today, 'MMM-yyyy'));
 public format = format;
+
 
 public firstDayCurrentMonth : Signal<Date> = computed(()=>{ return (parse(this.currentMonth(), 'MMM-yyyy', new Date()))}) ;
 public days : Signal<Date[]> = computed(()=>{return (eachDayOfInterval({
@@ -63,24 +60,15 @@ public daysofweek = [{ name: 'Domingo', short: 'Dom' },
 
     chgMonth(addMonth: boolean = true) {
       this.changeFirstDayCurrentMonth(addMonth);
-      this.unPaintAppointments();
+      console.log('chgMonth');
+      this.EventUnpaintAppointment.emit();
+      this.EventChargeAppointments.emit(this.currentMonth());
     }
 
     chgSelectedDay(day: Date) {
       this.selectedDay.set(day);
     }
 
-    private unPaintAppointment(appoitment: IAppoinment){
-    console.log('Entranndo a des-pintar cita');
-    let numberday = format(appoitment.date, 'd');
-    let daysContainer = document.getElementById(`day-appts-${numberday}`);
-    daysContainer!.innerHTML= '';
-  }
-
-  private unPaintAppointments() {
-    this.appointMentsofMonth().forEach(appointment => {
-      this.unPaintAppointment(appointment);
-    });
-  }
+  
 
 }

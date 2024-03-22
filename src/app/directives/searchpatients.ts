@@ -13,7 +13,7 @@ export class SearchPatientsDirective {
   ngOnInit() {
     fromEvent(this.el.nativeElement, 'input').pipe(
 
-      map((e: any) => e.target.value ),
+      map((e: any) => e.target.value.toLowerCase() ),
       
       debounceTime(400),
       distinctUntilChanged(),

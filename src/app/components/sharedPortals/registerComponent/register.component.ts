@@ -39,8 +39,8 @@ export class RegisterComponent {
 
       console.log(this.registroForm);
       this.patient = {
-        name: this.registroForm.value.name,
-        lastname: this.registroForm.value.lastname,
+        name: (this.registroForm.value.name).toLowerCase(),
+        lastname: this.registroForm.value.lastname.toLowerCase(),
         account: { email: this.registroForm.value.email , cc:this.registroForm.value.cc , activeAccount: false},
         phone: this.registroForm.value.phone,
         accountcreation: new Date( Date.now())

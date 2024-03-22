@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { IUser } from '../models/user';
 import { IStorageService } from '../models/interfaceservicios';
+import { IAppoinment } from '../models/appoiment';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,19 @@ export class LocalstorageService implements IStorageService {
   ReturnJWTData(): Observable<string> {
     let _jwt=localStorage.getItem('token')!;
     return of(_jwt);
+  }
+  SaveAppointmentsCurrentMonth(_appointments: IAppoinment[]): void {
+    localStorage.setItem('appointments',JSON.stringify(_appointments));
+  }
+  ReturnAppointmentsCurrentMonth(): IAppoinment[] | null {
+    let item = localStorage.getItem('appointments');
+    console.log('item', item);
+    if (item==null) {
+      return null;
+    }
+    let _appointments:IAppoinment[]=(JSON.parse( item ));
+    
+    return _appointments ;
   }
 
 
