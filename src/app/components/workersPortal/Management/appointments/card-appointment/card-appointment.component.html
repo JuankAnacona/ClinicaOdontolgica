@@ -20,8 +20,8 @@
           >
             <span class="font-bold">Paciente:</span>
             <span class="text-capitalize"
-              >{{ appointment.patient?.name }}
-              {{ appointment.patient?.lastname }}</span
+              >{{ appointment.patient?.name?.toCapitalCase() }}
+              {{ appointment.patient?.lastname?.toCapitalCase() }}</span
             >
             <span>CC:{{ appointment.patient?.account?.cc }}</span>
             <span
@@ -43,8 +43,8 @@
           </span>
           <span class="m-3 font-normal text-gray-700 dark:text-gray-400">
             <span class="font-bold">Acargo:</span>
-            {{ appointment.worker?.name }}
-            {{ appointment.worker?.lastname }}
+            {{ appointment.worker?.name?.toCapitalCase() }}
+            {{ appointment.worker?.lastname?.toCapitalCase() }}
           </span>
         </section>
         <hr />

@@ -84,9 +84,9 @@
                 class="capitalize"
                 (click)="
                   selectPatient(
-                    patient.name +
+                    patient.name.toCapitalCase() +
                       ' ' +
-                      patient.lastname +
+                      patient.lastname.toCapitalCase() +
                       '-' +
                       patient.account?.cc!
                   )
@@ -138,7 +138,6 @@
               formControlName="hour"
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             >
-              <option selected="">Seleccione Hora</option>
               @for (h of this.hours ; track h) {
               <option value="{{ h }}">{{ h }}</option>
 
@@ -159,7 +158,8 @@
               <option selected="true">Seleccione Equipo</option>
               @for (worker of this.AllWorkers; track worker) {
               <option class="capitalize" value="{{ worker.account?.cc }}">
-                {{ worker.name }} {{ worker.lastname }} -
+                {{ worker.name.toCapitalCase() }}
+                {{ worker.lastname.toCapitalCase() }} -
                 {{ worker.account?.cc }}
               </option>
               }

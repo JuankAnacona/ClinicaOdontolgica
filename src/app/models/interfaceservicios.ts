@@ -8,5 +8,6 @@ export interface IStorageService {
   ReturnUserData(): Observable<IUser>;
   ReturnJWTData(): Observable<string>;
   SaveAppointmentsCurrentMonth(_appointments: IAppoinment[]): void;
-  ReturnAppointmentsCurrentMonth(): IAppoinment[] | null; 
+  ReturnAppointmentsCurrentMonth(): IAppoinment[] | null;
+  removeUserData(): void; 
 }

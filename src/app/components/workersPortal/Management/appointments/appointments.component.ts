@@ -95,21 +95,36 @@ async ngOnInit() {
         });
   }
 
-  public paintAppointment(appointment: IAppoinment){
-  console.log('Entranndo a pintar cita');
-      let numberday = format(appointment.date, 'd');
-      let daysContainer = document.getElementById(`day-appts-${numberday}`);
-      let dayContainer = document.createElement('div');
-      dayContainer?.classList.add( this.colorAppointment(appointment.status,true), 'text-white', 'rounded', 'p-1', 'mb-1');
-      let info = document.createElement('span');
-      info.textContent = `${format(appointment.date, "HH")}:${format(appointment.date, "mm")} - ${appointment.ccpatient}`;
-      dayContainer.appendChild(info);
-      daysContainer?.appendChild(dayContainer);
+  public operateAppointment(idoffApp : string, operation: string){
+    const data = [idoffApp, operation];
+    this.restAdminSvc.operateAppointment(data).subscribe( resp => {
+      console.log('resp', resp);
+      if (resp.status === 'success') {
+        //Volver a pintar las citas
+        this.chgStateViewAppointments( idoffApp,resp.data);
+      }
       
+    });
+  }
+  
+  public async  chargeAppointments(month: string){
+    let date = new Date(month);
+    await this.recoveryAppointments(date);
   }
 
-  
 
+  //#region METHODS TO CHANGE DOM ELEMENTS
+  public chgStateViewAppointments(idoffApp: string, state: string){
+      this.appointMentsofMonth.update( array => {     
+          return array.map( appointment=> {
+            if (appointment.id === idoffApp) {
+              appointment.status = state;
+            } 
+            return appointment; // Return the updated appointment
+          });
+        });
+      this.selectedDay.set(new Date (this.selectedDay()));
+  }
   public paintAppointments(appointments : IAppoinment[] ) {
     appointments.forEach(appointment => {
       this.paintAppointment(appointment);
@@ -117,7 +132,33 @@ async ngOnInit() {
     })
   }
 
-  public colorAppointment(status: string, forCalendar: boolean = false){
+  public paintAppointment(appointment: IAppoinment){
+  console.log('Entranndo a pintar cita');
+      let numberday = format(appointment.date, 'd');
+      let daysContainer = document.getElementById(`day-appts-${numberday}`);
+      let dayContainer = document.createElement('div');
+      dayContainer?.classList.add( this.colorAppointment(appointment.status,true), 'text-white', 'rounded', 'p-1', 'mb-1');
+      let info = document.createElement('span');
+      info.textContent = `${format(appointment.date, "HH")}:${format(appointment.date, "mm")} - ${appointment.patient?.name.toCapitalCase()} ${appointment.patient?.lastname.toCapitalCase()}`;
+      dayContainer.appendChild(info);
+      daysContainer?.appendChild(dayContainer);
+      
+  }
+
+  private unPaintAppointment(appoitment: IAppoinment){
+    let numberday = format(appoitment.date, 'd');
+    let daysContainer = document.getElementById(`day-appts-${numberday}`);
+    daysContainer!.innerHTML= '';
+  }
+
+  public unPaintAppointments() {
+    console.log('Entranndo a des-pintar citas');
+    this.appointMentsofMonth().forEach(appointment => {
+      this.unPaintAppointment(appointment);
+    });
+  }
+
+   public colorAppointment(status: string, forCalendar: boolean = false){
     switch (status) {
       case 'Pendiente':
         return forCalendar ? 'bg-yellow-400' :'bg-white hover:bg-gray-100';
@@ -130,38 +171,7 @@ async ngOnInit() {
         return forCalendar ? 'bg-yellow-400' :'bg-white hover:bg-gray-100';
     }
   }
-  
-
-
-  public operateAppointment(idoffApp : string, operation: string){
-    const data = [idoffApp, operation];
-    this.restAdminSvc.operateAppointment(data).subscribe( resp => {
-      console.log('resp', resp);
-      if (resp.status === 'success') {
-        let appointment = this.appointMentsofMonth().find((appointment) => appointment.id === idoffApp);
-        //Volver a pintar las citas
-      }
-      this.selectedDay.set(this.selectedDay());
-    });
-  }
-
-    private unPaintAppointment(appoitment: IAppoinment){
-    console.log('Entranndo a des-pintar cita');
-    let numberday = format(appoitment.date, 'd');
-    let daysContainer = document.getElementById(`day-appts-${numberday}`);
-    daysContainer!.innerHTML= '';
-  }
-
-  public unPaintAppointments() {
-    console.log('Entranndo a des-pintar citas');
-    this.appointMentsofMonth().forEach(appointment => {
-      this.unPaintAppointment(appointment);
-    });
-  }
-  public async  chargeAppointments(month: string){
-    let date = new Date(month);
-    await this.recoveryAppointments(date);
-  }
-
-
+  //#endregion
 }
+
+

@@ -5,6 +5,8 @@ import { IUser } from '../../../../../models/user';
 import { IAppoinment } from '../../../../../models/appoiment';
 import { TranslateDatePipe } from '../../../../../pipes/translate-date.pipe';
 import { SearchPatientsDirective } from '../../../../../directives/searchpatients';
+import { Observable, lastValueFrom, map } from 'rxjs';
+import { IRestMessage } from '../../../../../models/restmessage';
 
 
 @Component({
@@ -24,27 +26,34 @@ export class ModalAppoitmentComponent {
   public newPatient = true;
   public patientsSearchs : WritableSignal<IUser[]> = signal([]);
   public AllWorkers : IUser[] = [];
+  public hours = this.generateHours();
+
+
+
+
 
 constructor(){
   
   this.formAppointment = new FormGroup({
-    hour: new FormControl('', Validators.required),
-    worker: new FormControl('', Validators.required),
+    hour: new FormControl('08:00', Validators.required),
+    worker: new FormControl('Seleccione Equipo', Validators.required),
     patient: new FormControl('', Validators.required),
     ccnewPatient: new FormControl('', ),
     description: new FormControl('', ),
   });
 
 }
+
+
+ 
   async ngOnInit() {
     await this.restAdminSvc.getWorkers().subscribe(respon => {
     this.AllWorkers = respon.data;
   });
   }
 
-  public hours = this.generateHours();
 
-private generateHours(): string[] {
+private generateHours(): String[] {
  const hours: string[] = [];
  for (let i = 8; i <= 19; i++) {
    for (let j = 0; j < 60; j += 15) {
@@ -56,18 +65,20 @@ private generateHours(): string[] {
 }
 
 
-  onSearch(filter: any) {
+  async onSearch(filter: any) {
 
   console.log('filter', filter);
     if(filter.length <=0){
       this.patientsSearchs.set([]);
       return;
     }
-    
-    this.restAdminSvc.searchPatients(filter).subscribe(respon => {
+    await this.restAdminSvc.searchPatients(filter).subscribe(respon => {
       console.log('respon', respon);
-      this.patientsSearchs.set(respon.data);
+      if (respon.status === 'success') {
+        this.patientsSearchs.set(respon.data);
+      }
     });
+    
  }
 
  
@@ -111,13 +122,14 @@ private generateHours(): string[] {
   this.restAdminSvc.createAppointment([appointment,this.newPatient, patient]).subscribe(respon => {
     console.log('respon', respon);
     if (respon.status === 'success') {
-      // Meter la nueva cita en el array de citas del mes
+      //Insert the patient and worker in the appointment
       const worker = this.AllWorkers.find((worker) => worker.account?.cc === appointment.ccworker);
       appointment.patient = patient;
       appointment.worker = worker;
-      this.appointMentsofMonth.update( array => [...array, appointment]);
-      this.formAppointment.reset();
-      this.selectedDay.set(new Date (this.selectedDay()));
+      //Change the view
+      this.chgAppointmentInView(appointment);
+      //Reset the form and close
+      this.formAppointment.reset({ hour: '08:00', worker: 'Seleccione Equipo'});
       document.getElementById('close-modal-new-appointment')?.click();
     }
   });
@@ -131,8 +143,8 @@ private generateHours(): string[] {
       return null;
     }
     // Eliminar espacios en blanco
-    let lastname_ = this.formAppointment.value.patient.split(',')[1].trim().toUpperCase();
-    let name_ = this.formAppointment.value.patient.split(',')[0].trim().toUpperCase();
+    let lastname_ = this.formAppointment.value.patient.split(',')[1].trim().toLowerCase();
+    let name_ = this.formAppointment.value.patient.split(',')[0].trim().toLowerCase();
     return patient = {
       account: {
         cc: this.formAppointment.value.ccnewPatient,
@@ -141,5 +153,10 @@ private generateHours(): string[] {
       name: name_,
       lastname: lastname_,
     }
+  }
+
+  chgAppointmentInView(appointment: IAppoinment){
+this.appointMentsofMonth.update( array => [...array, appointment]);
+      this.selectedDay.set(new Date (this.selectedDay()));
   }
 }

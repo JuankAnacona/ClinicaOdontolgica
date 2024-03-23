@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, WritableSignal, computed, effect, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { IUser } from '../models/user';
 import { IStorageService } from '../models/interfaceservicios';
@@ -9,10 +9,19 @@ import { IAppoinment } from '../models/appoiment';
 })
 export class LocalstorageService implements IStorageService {
 
-  constructor() { }
+  userWritableSingal: WritableSignal<IUser | null> = signal<IUser | null>(null);
+  userSignal: Signal<IUser | null> = computed(()=>{
+    return this.userWritableSingal();
+  });
+  
+
+  constructor() { 
+    
+  }
   
   SaveUserData(_datauser: IUser): void {
    localStorage.setItem('datauser',JSON.stringify(_datauser));
+   
   }
   SaveJWTData(jwt: string): void {
     localStorage.setItem('token', jwt);
@@ -37,6 +46,10 @@ export class LocalstorageService implements IStorageService {
     let _appointments:IAppoinment[]=(JSON.parse( item ));
     
     return _appointments ;
+  }
+  removeUserData(): void {
+    localStorage.removeItem('datauser');
+    localStorage.removeItem('token');
   }
 
 

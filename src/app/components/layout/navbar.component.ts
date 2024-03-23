@@ -5,6 +5,9 @@ import { IOdon_Service } from '../../models/odon_service';
 import { Component , Inject, signal, Signal, inject } from '@angular/core';
 import { toSignal  } from '@angular/core/rxjs-interop';
 import { Observable } from 'rxjs';
+import { MY_TOKEN_SERVICESTORAGE } from '../../services/injectiontokenstorageservices';
+import { LocalstorageService } from '../../services/localstorage.service';
+import { IUser } from '../../models/user';
 
 
 @Component({
@@ -15,9 +18,18 @@ import { Observable } from 'rxjs';
   styleUrl: './navbar.component.css'
 })
 export class NavbarComponent {
- public odon_services : Signal<IOdon_Service[]>= signal<IOdon_Service[]>([]);
+  @Inject (NodeRestService) private restSvc: NodeRestService = inject(NodeRestService);
+  @Inject (MY_TOKEN_SERVICESTORAGE) private storageSvc = inject(LocalstorageService);
+  public odon_services : Signal<IOdon_Service[]>= signal<IOdon_Service[]>([]);
+  public userwelcome!: Signal<IUser | null> ;
   
-@Inject (NodeRestService) private restSvc: NodeRestService = inject(NodeRestService);
   constructor( ){
-   this.odon_services =  toSignal(this.restSvc.getOdonServices() as Observable<IOdon_Service[]>, {initialValue: []}); }
+   this.odon_services =  toSignal(this.restSvc.getOdonServices() as Observable<IOdon_Service[]>, {initialValue: []}); 
+   this.userwelcome = toSignal(this.storageSvc.ReturnUserData(), {initialValue: null});
+  }
+  logout(){
+    this.storageSvc.removeUserData();
+  }
+  
+  
 }
