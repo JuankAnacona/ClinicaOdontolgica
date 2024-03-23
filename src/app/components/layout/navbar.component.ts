@@ -25,7 +25,7 @@ export class NavbarComponent {
   
   constructor( ){
    this.odon_services =  toSignal(this.restSvc.getOdonServices() as Observable<IOdon_Service[]>, {initialValue: []}); 
-   this.userwelcome = toSignal(this.storageSvc.ReturnUserData(), {initialValue: null});
+   this.userwelcome = this.storageSvc.ReturnUserData();
   }
   logout(){
     this.storageSvc.removeUserData();

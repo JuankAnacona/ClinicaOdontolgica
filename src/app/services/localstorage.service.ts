@@ -21,14 +21,16 @@ export class LocalstorageService implements IStorageService {
   
   SaveUserData(_datauser: IUser): void {
    localStorage.setItem('datauser',JSON.stringify(_datauser));
-   
+   this.userWritableSingal.set(_datauser);
   }
   SaveJWTData(jwt: string): void {
     localStorage.setItem('token', jwt);
   }
-  ReturnUserData(): Observable<IUser> {
+  ReturnUserData(): Signal<IUser> {
     let _datauser:IUser=(JSON.parse( localStorage.getItem('datauser')! )) as IUser;
-    return of( _datauser );
+    this.userWritableSingal.set(_datauser);
+    
+    return this.userSignal as Signal<IUser>;
   }
   ReturnJWTData(): Observable<string> {
     let _jwt=localStorage.getItem('token')!;
@@ -49,6 +51,7 @@ export class LocalstorageService implements IStorageService {
   }
   removeUserData(): void {
     localStorage.removeItem('datauser');
+    this.userWritableSingal.set(null);
     localStorage.removeItem('token');
   }
 
