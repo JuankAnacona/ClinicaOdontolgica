@@ -65,6 +65,7 @@
             >Desconectarse</a
           >
         </li>
+
         } @else {
         <li>
           <a
@@ -131,7 +132,7 @@
           </div>
         </li>
 
-        }
+        } @if (!(this.userwelcome()?.account?.typeuser === 'worker')){
 
         <li>
           <button
@@ -179,6 +180,16 @@
             >Contacto</a
           >
         </li>
+        } @else {
+        <li>
+          <a
+            routerLink="/PortalEmpleado/Gestion/Citas"
+            routerLinkActive="router-link-active"
+            class="text-blue-600 hover:bg-gray-50 border-b border-gray-100 md:hover:bg-transparent md:border-0 block pl-3 pr-4 py-2 md:hover:text-blue-700 md:p-0"
+            >Administracion</a
+          >
+        </li>
+        }
       </ul>
     </div>
   </div>

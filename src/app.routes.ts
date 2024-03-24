@@ -5,6 +5,8 @@ import { RegisterCompletedComponent } from './app/components/sharedPortals/regis
 import { LoginWorkersComponent } from './app/components/workersPortal/login-workers/login-workers.component';
 import { LoginComponent } from './app/components/patientPortal/loginComponent/login.component';
 import { AppointmentsComponent } from './app/components/workersPortal/Management/appointments/appointments.component';
+import { PatientsComponent } from './app/components/workersPortal/Management/patients/patient-list/patients.component';
+import { HistoryPatientsComponent } from './app/components/workersPortal/Management/patients/patient-list/history-patients/history-patients.component';
 
 export const routes: Routes = [
     { path: 'PortalPaciente', 
@@ -15,8 +17,12 @@ export const routes: Routes = [
   children: [
     {path: 'LoginEmpleado', component: LoginWorkersComponent},
     {path: 'Gestion', children: [
-      {path: 'Citas', component: AppointmentsComponent}
-    
+      {path: 'Citas', component: AppointmentsComponent},
+      {path: 'Pacientes',
+      children: [
+        { path: 'ListarPacientes', component: PatientsComponent},
+        {path: 'HistorialClinico/:idpatient', component: HistoryPatientsComponent  }
+      ]}
     ]}
   ]
   },

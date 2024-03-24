@@ -2,13 +2,16 @@ import { IAddress } from './address';
 export interface IUser {
     name:      string;
     lastname:   string;
-    account?:      {  email?: string, cc?: string, activeAccount?:boolean, imagenAvatarBASE64?:string  };
+    account?:      {  email?: string, cc: string,typedocument?: string, activeAccount?:boolean, typeuser?: string };
     phone?:    string;
-    address?: IAddress;
+    address?: string;
+    city?:      string;
+    state?:     string;
     genere?:     string;
-    birthdate?:    Date;
+    age?:       number;
+    family_background?: string;
     accountcreation?: Date;
-    description?:   string;
+    idsappointments?: string[];
 }
 
 

@@ -38,4 +38,12 @@ export class RestforAdminService {
   public operateAppointment(data: string[]): Observable<IRestMessage>{
     return this.clientHttp.post<IRestMessage>(`${this.url}WorkerPortal/OperateAppointment`,{data});
   }
+
+  public getPaginationPatients(): Observable<IRestMessage>{
+    return this.clientHttp.get<IRestMessage>(`${this.url}WorkerPortal/GetPaginationPatients`);
+  }
+  public RecoveryClinicHistory(idpatient: string): Observable<IRestMessage>{
+    return this.clientHttp.get<IRestMessage>(`${this.url}WorkerPortal/RecoveryClinicHistory?idpatient=${idpatient}`);
+  }
+  
 }

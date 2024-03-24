@@ -116,6 +116,10 @@
             [colorAppointment]="this.colorAppointment"
             (launchOperateApp)="operateAppointment($event[0], $event[1])"
           ></app-card-appointment>
+          } @empty {
+          <p class="text-black text-3xl font-bold my-3">
+            No hay citas agendadas para este dia...
+          </p>
           }
         </div>
       </div>
