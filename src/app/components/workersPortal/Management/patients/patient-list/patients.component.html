@@ -1,0 +1,26 @@
+<div class="flex">
+  <div class="basis-72">
+    <app-aside-worker></app-aside-worker>
+  </div>
+  <div class="basis-3/4">
+    <div>
+      <section
+        class="flex flex-row justify-between items-center"
+        id="header_options"
+      >
+        <section>
+          <app-filter-options></app-filter-options>
+        </section>
+        <section>
+          <app-pagination></app-pagination>
+        </section>
+      </section>
+      <section>
+        <!-- Table patients-->
+        <app-table-patients
+          [patients]="this.currentPatients"
+        ></app-table-patients>
+      </section>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,168 @@
+<div>
+  <section>
+    <h2 class="text-3xl my-4 font-bold uppercase">
+      Historial Clinico de {{ this.patient()?.name?.toCapitalCase() }}
+    </h2>
+    <section class="flex flex-wrap items-center justify-around my-4">
+      <h3 class="text-2xl basis-[100%] text-center my-4 font-bold">DATOS</h3>
+      <p>
+        <span class="uppercase font-bold">Nombre:</span>
+        {{ this.patient()?.name?.toCapitalCase() }}
+      </p>
+      <p>
+        <span class="uppercase font-bold">Apellidos:</span>
+        {{ this.patient()?.lastname?.toCapitalCase() }}
+      </p>
+      <p>
+        <span class="uppercase font-bold">Correo:</span>
+        {{
+          this.patient()?.account?.email
+            ? this.patient()?.account?.email
+            : "Email no registrado"
+        }}
+      </p>
+      <p>
+        <span class="uppercase font-bold">Telefono:</span>
+        {{
+          this.patient()?.phone
+            ? this.patient()?.phone
+            : "Telefono no registrado"
+        }}
+      </p>
+    </section>
+  </section>
+
+  <h2 class="text-2xl my-3 font-bold uppercase">Citas del paciente</h2>
+
+  <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
+    <table
+      class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+    >
+      <thead
+        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+      >
+        <tr>
+          <th scope="col" class="px-6 py-3">Fecha</th>
+          <th scope="col" class="px-6 py-3">Hora</th>
+          <th scope="col" class="px-6 py-3">Estado</th>
+          <th scope="col" class="px-6 py-3">Acargo</th>
+          <th scope="col" class="px-6 py-3">Fecha Creacion</th>
+          <th scope="col" class="px-6 py-3">
+            <span class="sr-only">Edit</span>
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (appointment of this.appointments(); track $index){
+        <tr class="bg-white hover:bg-gray-50">
+          <th
+            scope="row"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+          >
+            {{ appointment.date.toLocaleString() }}
+          </th>
+          <td class="px-6 py-4">
+            {{ format(appointment.date, "HH") }} :
+            {{ format(appointment.date, "mm") }}
+          </td>
+          <td class="px-6 py-4">
+            {{ appointment.status }}
+          </td>
+          <td class="px-6 py-4">
+            {{ appointment.worker?.name?.toCapitalCase() }}
+            {{ appointment.worker?.lastname?.toCapitalCase() }}
+          </td>
+          <td class="px-6 py-4">
+            {{ appointment.creationDate!.toLocaleString() }}
+          </td>
+          <td class="px-6 py-4 text-right">
+            <a
+              [routerLink]="[
+                '/PortalEmpleado/Gestion/Pacientes/HistorialClinico'
+              ]"
+              routerLinkActive="router-link-active"
+              class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+              >Añadir Historia</a
+            >
+          </td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  @for (appointment of this.appointments(); track $index){
+  <!--<section
+    href="#"
+    class="{{
+      'flex flex-col  items-center  border border-gray-200 rounded-lg shadow md:flex-row md:max-w-xl  my-4 ' +
+        this.colorAppointment(appointment.status)
+    }}"
+  >
+    <div class="flex flex-col justify-between p-4 leading-normal">
+      <h5
+        class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
+      >
+        {{ appointment.date.toLocaleString() }}
+      </h5>
+      <div class="flex lg:flex-nowrap md:flex-wrap">
+        <div class="flex m-3 flex-col">
+          <section class="flex lg:flex-row md:flex-col">
+            <span class="m-3 font-normal text-gray-700 dark:text-gray-400">
+              <span class="font-bold">Acargo:</span>
+              {{ appointment.worker?.name?.toCapitalCase() }}
+              {{ appointment.worker?.lastname?.toCapitalCase() }}
+            </span>
+          </section>
+          <hr />
+          <section class="flex lg:flex-row md:flex-col space-x-3">
+            <span class="m-3 font-normal text-gray-700 dark:text-gray-400">
+              <span class="font-bold">Descripcion:</span>
+              {{
+                appointment.description
+                  ? appointment.description
+                  : "Sin descripcion"
+              }}
+            </span>
+            <span class="m-3 font-normal text-gray-700 dark:text-gray-400">
+              <span class="font-bold">Estado:</span>
+              {{ appointment.status }}
+            </span>
+          </section>
+        </div>
+        @if (appointment.status === ("Pendiente")){
+        <div
+          class="flex m-3 justify-center items-center md:flex-row lg:flex-col"
+        >
+          <button
+            class="text-white m-3 block bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          >
+            Asistió
+          </button>
+          <button
+            class="text-white block m-3 bg-yellow-300 hover:bg-yellow-400 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+          >
+            No Asistió
+          </button>
+        </div>
+        }
+      </div>
+
+      @if (appointment.status === "Pendiente"){
+      <section class="flex space-x-3 mt-4">
+        <button
+          class="text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800"
+        >
+          Cancelar Cita
+        </button>
+        <button
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Modificar Cita
+        </button>
+      </section>
+      }
+    </div>
+  </section>-->
+  }
+</div>
